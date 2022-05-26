@@ -4,11 +4,13 @@ import Sort from "../components/Sort";
 import Skeleton from "../components/pizzaBlock/Skeleton";
 import PizzaBlock from "../components/pizzaBlock";
 import axios from "../axios";
+import Pagination from "../components/Pagination";
 
-const Home = () => {
+const Home = ({searchValue}) => {
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [categoryId, setCategoryId] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const [sortType, setSortType] = useState({
         name: 'популярности',
         sortProperty: 'rating'
@@ -16,12 +18,12 @@ const Home = () => {
 
     useEffect(() =>{
         setIsLoading(true)
-        axios.get(`/items?${categoryId > 0 ? `category=${categoryId}` : ''}&sortBy=${sortType.sortProperty.replace('-', '')}&order=${sortType.sortProperty.includes('-') ? 'asc' : 'desc'}`).then(res =>{
+        axios.get(`/items?page=${currentPage}&limit=4${categoryId > 0 ? `category=${categoryId}` : ''}&sortBy=${sortType.sortProperty.replace('-', '')}&order=${sortType.sortProperty.includes('-') ? 'asc' : 'desc'}&search=${searchValue ? searchValue : ''}`).then(res =>{
             setItems(res.data);
             setIsLoading(false);
         });
         window.scrollTo(0, 0);
-    }, [categoryId, sortType]);
+    }, [categoryId, sortType, searchValue, currentPage]);
 
 
     return (
@@ -32,6 +34,16 @@ const Home = () => {
             </div>
             <h2 className="content__title">Все пиццы</h2>
             <div className="content__items">
+                {/*{*/}
+                {/*    isLoading ?*/}
+                {/*        [...new Array(6)].map((_, i) => <Skeleton key={i}/>)*/}
+                {/*        :*/}
+                {/*        items.filter((item) =>{*/}
+                {/*            return item.title.toLowerCase().includes(searchValue.toLowerCase())*/}
+                {/*        }).map((obj) =>{*/}
+                {/*            return <PizzaBlock key={obj.id} {...obj}/>*/}
+                {/*        })*/}
+                {/*}*/}
                 {
                     isLoading ?
                         [...new Array(6)].map((_, i) => <Skeleton key={i}/>)
@@ -41,6 +53,7 @@ const Home = () => {
                         })
                 }
             </div>
+            <Pagination onChangePage={(index) => setCurrentPage(index)}/>
         </div>
     );
 };

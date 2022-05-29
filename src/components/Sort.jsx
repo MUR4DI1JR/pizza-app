@@ -1,18 +1,23 @@
 import React, {useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {setSort} from "../redux/slices/filterSlice";
 
-const Sort = ({value, onClickSort}) => {
+const list = [
+    {name: 'популярности', sortProperty: 'rating'},
+    {name: 'популярности (ASC)', sortProperty: '-rating'},
+    {name: 'цене', sortProperty: 'price'},
+    {name: 'цене (ASC)', sortProperty: '-price'},
+    {name: 'алфавиту', sortProperty: 'title'},
+    {name: 'алфавиту (ASC)', sortProperty: '-title'}
+]
+
+const Sort = () => {
+    const {sort} = useSelector(state => state.filter);
     const [isVisiblePopup, setIsVisiblePopup] = useState(false);
-    const list = [
-        {name: 'популярности', sortProperty: 'rating'},
-        {name: 'популярности (ASC)', sortProperty: '-rating'},
-        {name: 'цене', sortProperty: 'price'},
-        {name: 'цене (ASC)', sortProperty: '-price'},
-        {name: 'алфавиту', sortProperty: 'title'},
-        {name: 'алфавиту (ASC)', sortProperty: '-title'}
-    ]
+    const dispatch = useDispatch();
 
-    const onSelectSort = (i) =>{
-        onClickSort(i);
+    const onSelectSort = (obj) =>{
+        dispatch(setSort(obj))
         setIsVisiblePopup(false);
     }
 
@@ -32,7 +37,7 @@ const Sort = ({value, onClickSort}) => {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span onClick={() => setIsVisiblePopup(!isVisiblePopup)}>{value.name}</span>
+                <span onClick={() => setIsVisiblePopup(!isVisiblePopup)}>{sort.name}</span>
             </div>
             {
                 isVisiblePopup && (
@@ -41,7 +46,7 @@ const Sort = ({value, onClickSort}) => {
                             {
                                 list.map((item, i) =>{
                                     return(
-                                        <li key={i} onClick={() => onSelectSort(item)} className={value.sortProperty === item.sortProperty ? 'active' : ''}>{item.name}</li>
+                                        <li key={i} onClick={() => onSelectSort(item)} className={sort.sortProperty === item.sortProperty ? 'active' : ''}>{item.name}</li>
                                     )
                                 })
                             }

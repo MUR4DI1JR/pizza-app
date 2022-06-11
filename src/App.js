@@ -7,14 +7,9 @@ import Home from "./pages/Home";
 import NotFound from "./components/NotFoundBlock";
 import Cart from "./pages/Cart";
 
-export const SearchContext = createContext();
-
 const App = () => {
-    const [searchValue, setSearchValue] = useState("");
-
     return (
         <div className="wrapper">
-            <SearchContext.Provider value={{searchValue, setSearchValue}}>
                 <Header/>
                 <div className="content">
                     <Routes>
@@ -23,7 +18,6 @@ const App = () => {
                         <Route path='*' element={<NotFound/>}/>
                     </Routes>
                 </div>
-            </SearchContext.Provider>
         </div>
     );
 };

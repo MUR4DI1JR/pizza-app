@@ -9,18 +9,14 @@ import Sort, {list} from "../components/Sort";
 import Skeleton from "../components/pizzaBlock/Skeleton";
 import PizzaBlock from "../components/pizzaBlock";
 import Pagination from "../components/Pagination";
-import {setCategoryId, setCurrentPage, setFilters} from "../redux/slices/filterSlice";
-import {fetchPizzas} from "../redux/slices/pizzaSlice";
-import CartEmpty from "../components/cartEmpty";
-import imgEmpty from "../assets/img/empty-cart.png";
-
+import {selectFilter, setCategoryId, setCurrentPage, setFilters} from "../redux/slices/filterSlice";
+import {fetchPizzas, selectPizzaData} from "../redux/slices/pizzaSlice";
 
 const Home = () => {
-    const {categoryId, sort, currentPage} = useSelector(state => state.filter);
-    const {items, status} = useSelector(state => state.pizza);
+    const {categoryId, sort, currentPage, searchValue} = useSelector(selectFilter);
+    const {items, status} = useSelector(selectPizzaData);
 
     const navigate = useNavigate();
-    const {searchValue} = useContext(SearchContext);
     const isSearch = useRef(false);
     const isMounted = useRef(false);
     const dispatch = useDispatch();
@@ -31,9 +27,7 @@ const Home = () => {
         const category = categoryId > 0 ? `category=${categoryId}` : '';
         const search = searchValue ? `&search=${searchValue}` : '';
 
-
         dispatch(fetchPizzas({sortBy, order, category, search, currentPage}));
-
     }
 
     useEffect(() =>{
@@ -75,7 +69,6 @@ const Home = () => {
         isSearch.current = false;
     }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
-    
     return (
         <div className="container">
             <div className="content__top">
